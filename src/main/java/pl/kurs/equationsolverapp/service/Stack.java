@@ -9,13 +9,13 @@ public class Stack<E> {
     }
 
     public void push(E x) {
-        StackItem<E> newItem = new StackItem<E>(x);
+        StackItem<E> newItem = new StackItem<>(x);
         newItem.next = top;
         top = newItem;
     }
 
     public boolean empty() {
-        return top == null;
+        return top != null;
     }
 
     public E peek() {
@@ -25,6 +25,5 @@ public class Stack<E> {
     public void pop() {
         top = top.next;
     }
-
 
 }

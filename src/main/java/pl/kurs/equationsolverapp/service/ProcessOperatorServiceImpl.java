@@ -21,19 +21,13 @@ public class ProcessOperatorServiceImpl implements ProcessOperatorService {
     }
 
     @Override
-    public BigDecimal processOperator(char op, Stack<BigDecimal> valueStack) {
-
-        BigDecimal b = valueStack.peek();
-        valueStack.pop();
-        BigDecimal a = valueStack.peek();
-        valueStack.pop();
-
-        return switch (op) {
-            case '+' -> addService.compute(a, b);
-            case '-' -> subtractService.compute(a, b);
-            case '*' -> multiplyService.compute(a, b);
-            case '/' -> divideService.compute(a, b);
-            default -> throw new IllegalStateException("Unexpected value: " + op);
+    public BigDecimal processOperator(char operator, BigDecimal val1, BigDecimal val2) {
+        return switch (operator) {
+            case '+' -> addService.compute(val1, val2);
+            case '-' -> subtractService.compute(val1, val2);
+            case '*' -> multiplyService.compute(val1, val2);
+            case '/' -> divideService.compute(val1, val2);
+            default -> throw new IllegalStateException("Unexpected value: " + operator);
         };
     }
 

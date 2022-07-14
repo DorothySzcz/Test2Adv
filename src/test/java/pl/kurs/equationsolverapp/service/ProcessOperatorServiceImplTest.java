@@ -31,17 +31,13 @@ public class ProcessOperatorServiceImplTest {
     public void shouldReturn6WhenOperatorIsPlus() {
 
         char op = '+';
-        Stack<BigDecimal> valueStack = new Stack<>();
-        valueStack.push(BigDecimal.valueOf(2));
-        valueStack.push(BigDecimal.valueOf(3));
+        BigDecimal val1 = BigDecimal.valueOf(2);
+        BigDecimal val2 = BigDecimal.valueOf(3);
 
-        BigDecimal firstValue = BigDecimal.valueOf(2);
-        BigDecimal secondValue = BigDecimal.valueOf(3);
-
-        Mockito.when(addService.compute(firstValue, secondValue)).thenReturn(BigDecimal.valueOf(6));
+        Mockito.when(addService.compute(val1, val2)).thenReturn(BigDecimal.valueOf(6));
         BigDecimal expectedValue = BigDecimal.valueOf(6);
 
-        BigDecimal result = processOperatorService.processOperator(op, valueStack);
+        BigDecimal result = processOperatorService.processOperator(op, val1, val2);
 
         Assertions.assertThat(result).isEqualTo(expectedValue);
     }
@@ -50,17 +46,13 @@ public class ProcessOperatorServiceImplTest {
     public void shouldReturn2WhenOperatorIsMinus() {
 
         char op = '-';
-        Stack<BigDecimal> valueStack = new Stack<>();
-        valueStack.push(BigDecimal.valueOf(5));
-        valueStack.push(BigDecimal.valueOf(3));
+        BigDecimal val1 = BigDecimal.valueOf(5);
+        BigDecimal val2 =  BigDecimal.valueOf(3);
 
-        BigDecimal firstValue = BigDecimal.valueOf(5);
-        BigDecimal secondValue = BigDecimal.valueOf(3);
-
-        Mockito.when(subtractService.compute(firstValue, secondValue)).thenReturn(BigDecimal.valueOf(2));
+        Mockito.when(subtractService.compute(val1, val2)).thenReturn(BigDecimal.valueOf(2));
         BigDecimal expectedValue = BigDecimal.valueOf(2);
 
-        BigDecimal result = processOperatorService.processOperator(op, valueStack);
+        BigDecimal result = processOperatorService.processOperator(op, val1, val2);
 
         Assertions.assertThat(result).isEqualTo(expectedValue);
     }
@@ -69,17 +61,14 @@ public class ProcessOperatorServiceImplTest {
     public void shouldReturn15WhenOperatorIsMultiplier() {
 
         char op = '*';
-        Stack<BigDecimal> valueStack = new Stack<>();
-        valueStack.push(BigDecimal.valueOf(5));
-        valueStack.push(BigDecimal.valueOf(3));
 
-        BigDecimal firstValue = BigDecimal.valueOf(5);
-        BigDecimal secondValue = BigDecimal.valueOf(3);
+        BigDecimal val1 =  BigDecimal.valueOf(5);
+        BigDecimal val2 =  BigDecimal.valueOf(3);
 
-        Mockito.when(multiplyService.compute(firstValue, secondValue)).thenReturn(BigDecimal.valueOf(15));
+        Mockito.when(multiplyService.compute(val1, val2)).thenReturn(BigDecimal.valueOf(15));
         BigDecimal expectedValue = BigDecimal.valueOf(15);
 
-        BigDecimal result = processOperatorService.processOperator(op, valueStack);
+        BigDecimal result = processOperatorService.processOperator(op, val1, val2);
 
         Assertions.assertThat(result).isEqualTo(expectedValue);
     }
@@ -88,17 +77,13 @@ public class ProcessOperatorServiceImplTest {
     public void shouldReturn3WhenOperatorIsDivider() {
 
         char op = '/';
-        Stack<BigDecimal> valueStack = new Stack<>();
-        valueStack.push(BigDecimal.valueOf(6));
-        valueStack.push(BigDecimal.valueOf(2));
+        BigDecimal val1 =  BigDecimal.valueOf(6);
+        BigDecimal val2 =  BigDecimal.valueOf(2);
 
-        BigDecimal firstValue = BigDecimal.valueOf(6);
-        BigDecimal secondValue = BigDecimal.valueOf(2);
-
-        Mockito.when(divideService.compute(firstValue, secondValue)).thenReturn(BigDecimal.valueOf(3));
+        Mockito.when(divideService.compute(val1, val2)).thenReturn(BigDecimal.valueOf(3));
         BigDecimal expectedValue = BigDecimal.valueOf(3);
 
-        BigDecimal result = processOperatorService.processOperator(op, valueStack);
+        BigDecimal result = processOperatorService.processOperator(op, val1, val2);
 
         Assertions.assertThat(result).isEqualTo(expectedValue);
     }
@@ -108,10 +93,10 @@ public class ProcessOperatorServiceImplTest {
 
         char op = '^';
         Stack<BigDecimal> valueStack = new Stack<>();
-        valueStack.push(BigDecimal.valueOf(6));
-        valueStack.push(BigDecimal.valueOf(2));
+        BigDecimal val1 = BigDecimal.valueOf(6);
+        BigDecimal val2 = BigDecimal.valueOf(2);
 
-        Throwable e = assertThrows(IllegalStateException.class, () -> processOperatorService.processOperator(op, valueStack));
+        Throwable e = assertThrows(IllegalStateException.class, () -> processOperatorService.processOperator(op, val1, val2));
 
         SoftAssertions sa = new SoftAssertions();
         sa.assertThat(e).isExactlyInstanceOf(IllegalStateException.class);

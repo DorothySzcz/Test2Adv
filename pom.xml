@@ -111,11 +111,7 @@
                                 <exclude>**/*pl/kurs/equationsolverapp/dao/*</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/exceptions/*</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/model/*</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/operatorsservices/OperatorService.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/eventservices/*</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/EquationSolverService.class</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/ProcessOperatorService.class</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/IValidationService.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/Stack.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/StackItem.class</exclude>
                             </excludes>
@@ -133,17 +129,35 @@
                                 <exclude>**/*pl/kurs/equationsolverapp/dao/*</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/exceptions/*</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/model/*</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/operatorsservices/OperatorService.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/eventservices/*</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/EquationSolverService.class</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/ProcessOperatorService.class</exclude>
-                                <exclude>**/*pl/kurs/equationsolverapp/service/IValidationService.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/Stack.class</exclude>
                                 <exclude>**/*pl/kurs/equationsolverapp/service/StackItem.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
                                     <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>METHOD</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
                                 </rule>
                             </rules>
                         </configuration>
