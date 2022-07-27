@@ -3,67 +3,68 @@ package pl.kurs.equationsolverapp.service;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import pl.kurs.equationsolverapp.exceptions.InvalidEquationFormatException;
 import pl.kurs.equationsolverapp.exceptions.UnknownOperatorException;
 import pl.kurs.equationsolverapp.model.EquationEvent;
 import pl.kurs.equationsolverapp.service.eventservices.EquationEventService;
+import pl.kurs.equationsolverapp.service.operatorsservices.AddService;
+import pl.kurs.equationsolverapp.service.operatorsservices.DivideService;
+import pl.kurs.equationsolverapp.service.operatorsservices.MultiplyService;
+import pl.kurs.equationsolverapp.service.operatorsservices.SubtractService;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import static org.mockito.Mockito.*;
+
 public class EquationSolverServiceImplTest {
 
     @Mock private ValidationService validationServiceMock;
-    @Mock private ProcessOperatorService processOperatorServiceMock;
     @Mock private EquationEventService equationEventServiceMock;
+    @Spy private AddService addService;
+    @Spy private SubtractService subtractService;
+    @Spy private MultiplyService multiplyService;
+    @Spy private DivideService divideService;
+    private ProcessOperatorService processOperatorServiceSpy;
     private EquationSolverService equationSolverService;
 
     @Before
     public void init() {
         MockitoAnnotations.openMocks(this);
-        equationSolverService = new EquationSolverServiceImpl(validationServiceMock, processOperatorServiceMock,equationEventServiceMock);
+        ProcessOperatorServiceImpl processOperatorServiceImpl = new ProcessOperatorServiceImpl(addService, subtractService, multiplyService, divideService);
+        processOperatorServiceSpy = spy(processOperatorServiceImpl);
+        equationSolverService = new EquationSolverServiceImpl(validationServiceMock, processOperatorServiceSpy,equationEventServiceMock);
     }
 
     @Test
-    public void shouldReturn7FromInput() throws InvalidEquationFormatException, UnknownOperatorException {
+    public void shouldReturn10FromInput() throws InvalidEquationFormatException, UnknownOperatorException {
 
-        String input = "8+2*2-4/2";
-        char operator1 = '+';
-        char operator2 = '*';
-        char operator3 = '-';
-        char operator4 = '/';
-        BigDecimal a = BigDecimal.valueOf(8);
-        BigDecimal b = BigDecimal.valueOf(2);
-        BigDecimal c = BigDecimal.valueOf(2);
-        BigDecimal d = BigDecimal.valueOf(4);
-        BigDecimal e = BigDecimal.valueOf(2);
+        String input = "8+2*2-4/2-1+2";
 
-        Mockito.when(validationServiceMock.validExpression(input)).thenReturn("8 + 2 * 2 - 4 / 2");
+        Mockito.when(validationServiceMock.validExpression(input)).thenReturn("8 + 2 * 2 - 4 / 2 - 1 + 2");
         String validatedExpression = validationServiceMock.validExpression(input);
 
-        Mockito.when(processOperatorServiceMock.processOperator(operator2, b, c)).thenReturn(BigDecimal.valueOf(4));
-        BigDecimal multiply = processOperatorServiceMock.processOperator(operator2, b, c);
+        BigDecimal val1 = processOperatorServiceSpy.processOperator('/', BigDecimal.valueOf(4), BigDecimal.valueOf(2));
+        BigDecimal val2 = processOperatorServiceSpy.processOperator('*', BigDecimal.valueOf(2), BigDecimal.valueOf(2));
+        BigDecimal val3 = processOperatorServiceSpy.processOperator('+', BigDecimal.valueOf(8), val2);
+        BigDecimal val4 = processOperatorServiceSpy.processOperator('-', val3, val1);
+        BigDecimal val5 = processOperatorServiceSpy.processOperator('-', val4, BigDecimal.valueOf(1));
+        BigDecimal resultOfProcessOperatorMethod = processOperatorServiceSpy.processOperator('+', val5, BigDecimal.valueOf(2));
 
-        Mockito.when(processOperatorServiceMock.processOperator(operator4, d, e)).thenReturn(BigDecimal.valueOf(2));
-        BigDecimal divide = processOperatorServiceMock.processOperator(operator4, d, e);
+        verify(addService, times(2)).compute(any(BigDecimal.class), any(BigDecimal.class));
+        verify(subtractService, times(2)).compute(any(BigDecimal.class), any(BigDecimal.class));
+        verify(multiplyService, times(1)).compute(any(BigDecimal.class), any(BigDecimal.class));
+        verify(divideService, times(1)).compute(any(BigDecimal.class), any(BigDecimal.class));
 
-        Mockito.when(processOperatorServiceMock.processOperator(operator1, a, multiply)).thenReturn(BigDecimal.valueOf(12));
-        BigDecimal add = processOperatorServiceMock.processOperator(operator1, a, multiply);
+        Mockito.lenient().doNothing().when(equationEventServiceMock).saveEvent(new EquationEvent(Timestamp.from(Instant.now()), validatedExpression));
 
-        Mockito.when(processOperatorServiceMock.processOperator(operator3, add, divide)).thenReturn(BigDecimal.valueOf(10));
+        BigDecimal resultOfCalculateEquationMethod = equationSolverService.calculateEquation(input);
 
-        EquationEvent equationEvent = new EquationEvent(Timestamp.from(Instant.now()), validatedExpression);
-        Mockito.lenient().doNothing().when(equationEventServiceMock).saveEvent(equationEvent);
-
-        BigDecimal result = equationSolverService.calculateEquation(input);
-        BigDecimal expectedValue = BigDecimal.valueOf(10);
-
-        Assertions.assertThat(result).isEqualTo(expectedValue);
-
+        Assertions.assertThat(resultOfCalculateEquationMethod)
+                .isEqualTo(BigDecimal.valueOf(11))
+                .isEqualTo(resultOfProcessOperatorMethod);
     }
 
 }
